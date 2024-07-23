@@ -35,17 +35,7 @@ function Game(name1, name2)
 {
     let board = GameBoard().getBoard();
     
-    //choose who starts at randdom
-    let activePlayer = Math.random() < 0.5 ? name1 : name2;
-
-    //this is done so that the first player will be x which the token for it will be 1 in the players object
-    if(name2 === activePlayer)
-        {
-            let tmp = name1;
-            name1 = name2
-            name2 = tmp;
-            activePlayer = name1;
-        }
+    let activePlayer = name1
         
     let players ={
         [name1]:{token: 1},
@@ -169,7 +159,10 @@ function play()
     const removeListeners = () => 
         {
             let domCells = Array.from(domBoard.querySelectorAll(".cell"))
-            domCells.forEach(cell => cell.removeEventListener("click", clickHandler))
+            domCells.forEach(cell => {
+                cell.removeEventListener("click", clickHandler)
+                cell.classList.remove("cell-hover")
+            })
         }
 
 
@@ -214,7 +207,6 @@ function play()
     //checks if click is valid, if it is valid it plays a round then calls update. removes pointer from cell divs
     const clickHandler = function(e) 
     {
-        console.log(game.getActivePlayer)
         cell = e.target;
         //check if move is valid
         move = cell.getAttribute("id").split("-").map(num => parseInt(num, 10));
@@ -227,7 +219,6 @@ function play()
         //play move and update turns
         game.playRound(move);
         game.switchPlayerTurns()
-        console.log(game.getActivePlayer)
 
         update() 
     }
