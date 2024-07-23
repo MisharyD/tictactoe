@@ -1,5 +1,4 @@
 
-//handles creation of the board and cells
 function GameBoard()
 {
 
@@ -31,28 +30,32 @@ function GameBoard()
 }
 
 
-//this module will handle the game flow and check for winners
+
 function Game(name1, name2)
 {
-    board = GameBoard().getBoard();
+    let board = GameBoard().getBoard();
+    
+    //choose who starts at randdom
+    let activePlayer = Math.random() < 0.5 ? name1 : name2;
 
-    let players ={
-        player1:{
-            name:name1,
-            token: 1
-        },
-        player2:{
-            name:name2,
-            token: 2
+    //this is done so that the first player will be x which the token for it will be 1 in the players object
+    if(name2 === activePlayer)
+        {
+            let tmp = name1;
+            name1 = name2
+            name2 = tmp;
+            activePlayer = name1;
         }
+        
+    let players ={
+        [name1]:{token: 1},
+        [name2]:{token: 2}
     }
-
-    let activePlayer = Math.random() < 0.5 ? 'player1' : 'player2';
-
     const getActivePlayer = () => activePlayer
 
     const switchPlayerTurns = function () {
-        activePlayer = activePlayer == 'player1' ? 'player2' : 'player1';
+        activePlayer = activePlayer === name1 ? name2 : name1;
+        
     }
 
     const playRound = function (cellIndex) 
@@ -62,7 +65,7 @@ function Game(name1, name2)
     }
 
     //returns true if game ended otherwise returns false
-    const checkGameState = function()
+    const terminated = function()
     {
         for(let i =0; i< 3; i++)
             {
@@ -76,25 +79,25 @@ function Game(name1, name2)
         return true;
     }
     
-    //this function should only be used after checkGameState. returns true if there is winner otherwise false (tie)
-    const checkWinner = function() 
+    //this function should only be used after checkGameState. if someone won, return the name. otherwise, return false
+    const winner = function() 
     {
         //horizental wins
         for(let i =0; i<3; i++)
             if( (board[i][0].getValue() == board[i][1].getValue() && board[i][1].getValue()  == board[i][2].getValue()) && board[i][0].getValue() != undefined)
-                return true
+                return players[name1] == board[i][0].getValue() ? name1 : name2
             
         //vertical wins
         for(let i =0; i<3; i++)
             if( (board[0][i].getValue() == board[1][i].getValue() && board[1][i].getValue() == board[2][i].getValue()) 
                 && board[0][i].getValue() != undefined)
-                return true
+                return players[name1] == board[i][0].getValue() ? name1 : name2
 
         //diagonal wins
         if( ((board[0][0].getValue() == board[1][1].getValue() && board[1][1].getValue()  == board[2][2].getValue())  
             || (board[0][2].getValue() == board[1][1].getValue() && board[1][1].getValue() == board[2][0].getValue())) 
             && board[1][1].getValue() != undefined )
-            return true
+            return players[name1] == board[1][1].getValue() ? name1 : name2
         
         return false
         
@@ -117,26 +120,122 @@ function Game(name1, name2)
 
     const getBoard = () => board
 
+    const getPlayerToken = (name) => players[name].token
 
-    return { checkWinner, switchPlayerTurns, getActivePlayer, checkGameState, playRound, getLegalMoves, getBoard }
+    return { winner, switchPlayerTurns, getActivePlayer, terminated, playRound, getLegalMoves, getBoard, getPlayerToken }
 
 }
 
+//this module handles interaction with the DOM
 function play()
 {
-    //get dom elements and add event listners to start button and reset button
+    //get dom elements
+    let game;
+    let startButton = document.querySelector(".start")
+    let resetButton = document.querySelector(".reset")
+    let form = document.querySelector(".form")
+    let domBoard = document.querySelector(".board")
+    let playerTurnContainer = document.querySelector(".turn")
+    let playingContainer = document.querySelector(".playingContainer")
     
-    //display playingcontainer and add eventlisters to cell divs which then calls the update function
-    const intit = (name1, name2) => {}
+    //init the game,display playingcontainer and add eventlisters to cell divs. then calls the update function
+    const init = (e) => 
+        {
+            
 
-    //update dom board and checks if game ends, if so, displays the reset button.
-    const update =() => {} 
+            //init game
+            let name1 = form.elements["name1"].value
+            let name2 = form.elements["name2"].value
+            domBoard.textContent = ""
+            game = Game(name1, name2)
+
+            //display playing container and add generate cell divs
+            form.style.display = "none"
+            playingContainer.style.display = "grid"
+            for (let i = 0; i < 3; i++) {
+                for (let j = 0; j < 3; j++) {
+                    let cell = document.createElement("div");
+                    cell.classList.add("cell", "cell-hover")
+                    cell.addEventListener("click", clickHandler)
+                    cell.id = i + "-" + j;
+                    domBoard.appendChild(cell);
+                }
+            }
+            
+            update()
+        }
+
+    //used when game ends to remove click listeners for cells
+    const removeListeners = () => 
+        {
+            let domCells = Array.from(domBoard.querySelectorAll(".cell"))
+            domCells.forEach(cell => cell.removeEventListener("click", clickHandler))
+        }
+
+
+    //update dom board, player turn, checks if game ends, if so, displays the reset button.
+    const update =() => {
+        let gameBoard = game.getBoard();
+
+        //update domcells with new input
+        for(let i =0; i<3; i++)
+            {
+                for(let j =0; j<3; j++)
+                    {
+                        if(gameBoard[i][j].getValue() != undefined)
+                            {
+                                domBoard.querySelector(`[id='${i}-${j}']`).textContent = gameBoard[i][j].getValue() == 1 ? "x" : "o"
+                            }
+                    }
+            }
+        
+        //check if game ends
+        let winner = game.winner()
+        if(winner)
+            {
+                playerTurnContainer.textContent = winner +" Won!"
+                resetButton.style.display = "block"
+                removeListeners()
+            }
+        else if(!game.winner() && game.terminated())
+            {
+                playerTurnContainer.textContent = "Draw!" 
+                resetButton.style.display = "block"
+                removeListeners()
+            }
+        else
+        {
+            //update player turn
+            playerTurnContainer.textContent = game.getActivePlayer() + " turn:"
+        }
+        
+    } 
 
     //checks if click is valid, if it is valid it plays a round then calls update. removes pointer from cell divs
     const clickHandler = function(e) 
     {
-        let exists = moves.some(subArray => subArray.every((value, index) => value === move[index]))
+        console.log(game.getActivePlayer)
+        cell = e.target;
+        //check if move is valid
+        move = cell.getAttribute("id").split("-").map(num => parseInt(num, 10));
+        cell.classList.remove("cell-hover")//remove pointer cursor from cell
+        let validMoves = game.getLegalMoves()
+        let exists = validMoves.some(subArray => subArray.every((value, index) => value === move[index]))
+        if(!exists)
+            return;
+
+        //play move and update turns
+        game.playRound(move);
+        game.switchPlayerTurns()
+        console.log(game.getActivePlayer)
+
+        update() 
     }
+
+    //add event listners to start button and reset button
+    startButton.addEventListener("click", init)
+    resetButton.addEventListener("click", init)
+
 }
 
 play();

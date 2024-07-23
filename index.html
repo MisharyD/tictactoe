@@ -11,31 +11,20 @@
     <div class="main">
         <form class = "form" action="">
             <div>
-                <label for="player1">Player1 Name:</label>
-                <input type = "text" id="player1" required>
+                <label for="name1">Player1 Name:</label>
+                <input type = "text" id="player1" name ="name1" required autocomplete="off">
             </div>
 
             <div>
-                <label for="player2">Player2 Name:</label>
-                <input type = "text" id="player2" required>
+                <label for="name2">Player2 Name:</label>
+                <input type = "text" id="name2" name = "name2" required autocomplete="off">
             </div>
-
-            <button class = "start" type = "submit">Start</button>
+            <button class = "start" type = "button">Start</button>
         </form>
         <div class="playingContainer" style = "display: none">
-            <div class="turn">player1 turn</div>
-            <div class="board">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-            <button class = "reset">Reset</button>
+            <div class="turn"></div>
+            <div class="board"></div>
+            <button type = "submit" class = "reset" style = "display: none;">Reset</button>
         </div>
     </div>
 
