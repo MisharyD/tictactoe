@@ -115,18 +115,30 @@ function Game(name1, name2)
         return moves;
     }
 
+    const getBoard = () => board
 
-    return { checkWinner, switchPlayerTurns, getActivePlayer, checkGameState, playRound, getLegalMoves }
+
+    return { checkWinner, switchPlayerTurns, getActivePlayer, checkGameState, playRound, getLegalMoves, getBoard }
 
 }
 
 function play()
 {
-    let game = Game("1", "2")
-    // let exists = moves.some(subArray => subArray.every((value, index) => value === move[index]))
+    //get dom elements and add event listners to start button and reset button
+    
+    //display playingcontainer and add eventlisters to cell divs which then calls the update function
+    const intit = (name1, name2) => {}
 
+    //update dom board and checks if game ends, if so, displays the reset button.
+    const update =() => {} 
+
+    //checks if click is valid, if it is valid it plays a round then calls update. removes pointer from cell divs
+    const clickHandler = function(e) 
+    {
+        let exists = moves.some(subArray => subArray.every((value, index) => value === move[index]))
+    }
 }
 
-play()
+play();
 
 

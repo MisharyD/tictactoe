@@ -7,9 +7,38 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <h1 class = "heading">Tic Tac Toe</h1>
     <div class="main">
-        
+        <form class = "form" action="">
+            <div>
+                <label for="player1">Player1 Name:</label>
+                <input type = "text" id="player1" required>
+            </div>
+
+            <div>
+                <label for="player2">Player2 Name:</label>
+                <input type = "text" id="player2" required>
+            </div>
+
+            <button class = "start" type = "submit">Start</button>
+        </form>
+        <div class="playingContainer" style = "display: none">
+            <div class="turn">player1 turn</div>
+            <div class="board">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+            <button class = "reset">Reset</button>
+        </div>
     </div>
+
     <script src = "script.js"></script>
 </body>
 </html>
