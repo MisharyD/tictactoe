@@ -128,14 +128,29 @@ function play()
     let playerTurnContainer = document.querySelector(".turn")
     let playingContainer = document.querySelector(".playingContainer")
     
+    const enableStartButton = (e) =>
+    {
+        let inputElements = form.querySelectorAll("input[type ='text']")
+        let disabled = false; 
+        inputElements.forEach(elm => 
+            {
+                if(elm.value == "")
+                    disabled = true;
+            }) 
+        
+        startButton.disabled = disabled
+    }
+
     //init the game,display playingcontainer and add eventlisters to cell divs. then calls the update function
     const init = (e) => 
         {
-            
-
             //init game
             let name1 = form.elements["name1"].value
             let name2 = form.elements["name2"].value
+
+            if(name1 == "" || name2 == "")
+                return
+
             domBoard.textContent = ""
             game = Game(name1, name2)
 
@@ -187,13 +202,11 @@ function play()
         if(winner)
             {
                 playerTurnContainer.textContent = winner +" Won!"
-                resetButton.style.display = "block"
                 removeListeners()
             }
         else if(!game.winner() && game.terminated())
             {
                 playerTurnContainer.textContent = "Draw!" 
-                resetButton.style.display = "block"
                 removeListeners()
             }
         else
@@ -223,9 +236,11 @@ function play()
         update() 
     }
 
-    //add event listners to start button and reset button
+    //add event listners to start button,reset button, and input elements
     startButton.addEventListener("click", init)
     resetButton.addEventListener("click", init)
+    let inputElements = Array.from(form.querySelectorAll("input[type ='text']"))
+    inputElements.forEach(elm => elm.addEventListener("keyup",enableStartButton));
 
 }
 

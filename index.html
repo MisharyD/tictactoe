@@ -8,7 +8,7 @@
 </head>
 <body>
     <h1 class = "heading">Tic Tac Toe</h1>
-    <div class="main">
+    
         <form class = "form" action="">
             <div>
                 <label for="name1">Player1 Name (X):</label>
@@ -19,14 +19,14 @@
                 <label for="name2">Player2 Name (O):</label>
                 <input type = "text" id="name2" name = "name2" required autocomplete="off">
             </div>
-            <button class = "start" type = "button">Start</button>
+            <button class = "start" type = "button" disabled = "true">Start</button>
         </form>
         <div class="playingContainer" style = "display: none">
             <div class="turn"></div>
             <div class="board"></div>
-            <button type = "submit" class = "reset" style = "display: none;">Reset</button>
+            <button type = "submit" class = "reset">Reset</button>
         </div>
-    </div>
+    
 
     <script src = "script.js"></script>
 </body>
