@@ -44,8 +44,7 @@ function Game(name1, name2)
     const getActivePlayer = () => activePlayer
 
     const switchPlayerTurns = function () {
-        activePlayer = activePlayer === name1 ? name2 : name1;
-        
+        activePlayer = activePlayer === name1 ? name2 : name1;   
     }
 
     const playRound = function (cellIndex) 
@@ -75,19 +74,19 @@ function Game(name1, name2)
         //horizental wins
         for(let i =0; i<3; i++)
             if( (board[i][0].getValue() == board[i][1].getValue() && board[i][1].getValue()  == board[i][2].getValue()) && board[i][0].getValue() != undefined)
-                return players[name1] == board[i][0].getValue() ? name1 : name2
+                return players[name1].token == board[i][0].getValue() ? name1 : name2
             
         //vertical wins
         for(let i =0; i<3; i++)
             if( (board[0][i].getValue() == board[1][i].getValue() && board[1][i].getValue() == board[2][i].getValue()) 
                 && board[0][i].getValue() != undefined)
-                return players[name1] == board[i][0].getValue() ? name1 : name2
+                return players[name1].token == board[0][i].getValue() ? name1 : name2
 
         //diagonal wins
         if( ((board[0][0].getValue() == board[1][1].getValue() && board[1][1].getValue()  == board[2][2].getValue())  
             || (board[0][2].getValue() == board[1][1].getValue() && board[1][1].getValue() == board[2][0].getValue())) 
             && board[1][1].getValue() != undefined )
-            return players[name1] == board[1][1].getValue() ? name1 : name2
+            return players[name1].token == board[1][1].getValue() ? name1 : name2
         
         return false
         
